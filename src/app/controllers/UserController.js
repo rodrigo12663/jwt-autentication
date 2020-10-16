@@ -1,6 +1,11 @@
-const User = require("../../database/models/User");
+const User = require("../models/User");
 const jwt = require ("jsonwebtoken");
+const authConfig = require ("../../config/auth.json")
 
+
+function generateToken (params) {
+    return jwt.sign({ params }, authConfig.secret, { expiresIn: '48h' })
+}
 module.exports = {
     async store(req,res){
         const {name,email,password} = req.body;
@@ -19,20 +24,24 @@ module.exports = {
         return res.status(200).json({user});
     },
     async authentication(req,res){
-        const {email,password} = req.body;
+        
 
-        if(await email == undefined){
+        if(await req.body.email == undefined){
             return res.status(400).json({error:"email inválido"});
         }
-        const EmailExist = await User.findOne({ where: { email } });
-        if(!EmailExist){
+        const user = await User.findOne({ where: {email: req.body.email } });
+        if(!user){
             return res.status(404).json({error:"email invalid credential"});
         }
-       const SenhaExist = await User.findOne({ where: { password } }); 
+       const SenhaExist = await User.findOne({ where: { password:req.body.password } }); 
        if(!SenhaExist){
         return res.status(401).json({error:"password invalid credential"});
        }
-       return res.status(200).json({token:"token falso!"});
+       const { id, name, email} = user;
+
+       
+       return res.status(200).json({token: generateToken({ id, email })})
+    
        
 
     }

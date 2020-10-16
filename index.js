@@ -1,6 +1,6 @@
 const Express = require ('express');
 const connection = require('./src/database');
-const User = require('./src/database/models/User.js');
+const User = require('./src/app/models/User.js');
 const routes = require('./src/routes');
 const app = Express();
 
