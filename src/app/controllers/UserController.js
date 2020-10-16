@@ -24,8 +24,6 @@ module.exports = {
         return res.status(200).json({user});
     },
     async authentication(req,res){
-        
-
         if(await req.body.email == undefined){
             return res.status(400).json({error:"email inválido"});
         }
@@ -40,7 +38,7 @@ module.exports = {
        const { id, name, email} = user;
 
        
-       return res.status(200).json({token: generateToken({ id, email })})
+       return res.status(200).json({ id, name, email,token: generateToken({ id, email })})
     
        
 
